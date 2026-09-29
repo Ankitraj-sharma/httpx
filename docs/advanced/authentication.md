@@ -230,3 +230,11 @@ class MyCustomAuth(httpx.Auth):
     async def async_auth_flow(self, request):
         raise RuntimeError("Cannot use a sync authentication class with httpx.AsyncClient")
 ```
+
+## Authentication and redirections
+
+For security reasons, when HTTPX follows a redirect that points away from the original origin (cross-origin redirects, such as redirecting to a different domain, subdomain, or port), HTTPX automatically strips the `Authorization` header from subsequent requests. This prevents sensitive credentials or Bearer tokens from being leaked to untrusted third-party hosts.
+
+The only exception to this rule is when a request is redirected directly from `http://` to `https://` on the exact same host and port.
+
+If your workflow requires cross-origin authentication across redirects, you can use a custom [authentication flow](#custom-authentication-schemes) or register an [event hook](event-hooks.md).
